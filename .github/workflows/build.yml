@@ -26,6 +26,8 @@ jobs:
         run: cmake --build build --config Release --parallel 3
       - name: Test MIDI, replay, history, effects and UI
         run: ctest --test-dir build -C Release --output-on-failure
+      - name: Record UI review image
+        run: python -c "import base64; print('SNAP_UI_IMAGE:' + base64.b64encode(open('build/Snap-UI-review.jpg','rb').read()).decode())"
       - name: Upload UI preview
         uses: actions/upload-artifact@v4
         with:

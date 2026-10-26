@@ -41,6 +41,7 @@ int main(){
   auto before=editor->createComponentSnapshot(editor->getLocalBounds());juce::Thread::sleep(180);auto after=editor->createComponentSnapshot(editor->getLocalBounds());int differences=0;
   for(int y=80;y<400;y+=3)for(int x=250;x<540;x+=3)if(before.getPixelAt(x,y)!=after.getPixelAt(x,y))++differences;
   require(differences>100,"Idle hand and background must animate without clicks");writePng(after,"Snap-UI.png");writePng(before,"Snap-UI-Idle.png");
+  {auto out=juce::File::getCurrentWorkingDirectory().getChildFile("Snap-UI-review.jpg").createOutputStream();juce::JPEGImageFormat jpeg;jpeg.setQuality(.78f);require(out&&jpeg.writeImageToStream(after,*out),"JPEG review capture failed");}
   p.getStateInformation(savedState);base.reset();p.releaseResources();
  }
  {

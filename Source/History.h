@@ -47,7 +47,11 @@ private:
  SnapQueue<snap::Recipe,4096> events;SnapQueue<Preview*,512> retired;
  std::atomic<Preview*> ready{nullptr};
  mutable std::mutex mutex;std::vector<Entry> index;Display current;juce::String lastError;juce::File requested;bool requestPlay=false,requestPending=false;
- static juce::String labelFor(const juce::File& file){return file.getFileNameWithoutExtension().replaceCharacter('_',' ');}
+ static juce::String labelFor(const juce::File& file){
+  const auto parts=juce::StringArray::fromTokens(file.getFileNameWithoutExtension(),"_","");
+  if(parts.size()>=5)return juce::Time(parts[1].getLargeIntValue()).formatted("%d %b %H:%M:%S")+"  "+parts.getLast()+"  #"+parts[3];
+  return file.getFileNameWithoutExtension();
+ }
  void setError(const juce::String& text){std::lock_guard<std::mutex> lock(mutex);lastError=text;revision.fetch_add(1);}
  std::unique_ptr<Preview> read(const juce::File& file){
   auto stream=file.createInputStream();if(!stream)return {};

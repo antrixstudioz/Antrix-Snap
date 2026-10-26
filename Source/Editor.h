@@ -46,6 +46,7 @@ class SnapEditor final:public juce::AudioProcessorEditor,public juce::DragAndDro
  SnapProcessor& p;GoldLook look;juce::TooltipWindow tips{this,650};
  juce::Image background=juce::ImageCache::getFromMemory(BinaryData::scene_png,BinaryData::scene_pngSize);
  juce::Image sheet=juce::ImageCache::getFromMemory(BinaryData::hand_png,BinaryData::hand_pngSize);
+ std::array<juce::Image,8> poses;
  std::array<juce::Slider,10> knobs;std::array<juce::Label,10> labels;std::vector<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>> attachments;
  std::array<juce::TextButton,4> bursts;std::array<juce::TextButton,7> styles;
  HandTrigger hand;SnapWaveform wave;juce::ComboBox historyBox,midiBox;juce::TextButton previous{"<"},next{">"},folder{"Folder"};
@@ -84,16 +85,13 @@ class SnapEditor final:public juce::AudioProcessorEditor,public juce::DragAndDro
  }
  void drawPose(juce::Graphics& g,int frame,float opacity,juce::Rectangle<float> dest,double time){
   if(opacity<.002f)return;juce::Graphics::ScopedSaveState save(g);g.setOpacity(opacity);
-  const int cw=sheet.getWidth()/4,ch=sheet.getHeight()/2,sx=(frame%4)*cw,sy=(frame/4)*ch;
   const float sway=float(std::sin(time*1.3))*.018f;g.addTransform(juce::AffineTransform::rotation(sway,dest.getCentreX(),dest.getBottom()-20));
-  // A continuous bend anchored at the wrist adds finger flex without moving a rectangular panel.
-  constexpr int strips=64;for(int i=0;i<strips;++i){const int a=i*ch/strips,b=(i+1)*ch/strips;const float y=float(a)/float(ch);
-   const float bend=2.7f*float(std::sin(time*1.9+y*2))*std::pow(1-y,2);
-   g.drawImage(sheet,int(dest.getX()+bend),int(dest.getY()+y*dest.getHeight()),int(dest.getWidth()),int(std::ceil(float(b-a)/float(ch)*dest.getHeight()))+1,sx,sy+a,cw,b-a);
-  }
+  g.drawImage(poses[size_t(frame)],dest,juce::RectanglePlacement::stretchToFit);
+
  }
 public:
  explicit SnapEditor(SnapProcessor& processor):AudioProcessorEditor(processor),p(processor),wave(processor),piano(processor.keyboard,juce::MidiKeyboardComponent::horizontalKeyboard){
+  for(int i=0;i<8;++i)poses[size_t(i)]=sheet.getClippedImage({(i%4)*sheet.getWidth()/4,(i/4)*sheet.getHeight()/2,sheet.getWidth()/4,sheet.getHeight()/2});
   setLookAndFeel(&look);setResizable(true,true);getConstrainer()->setFixedAspectRatio(1.5);setResizeLimits(690,460,990,660);setSize(780,520);setWantsKeyboardFocus(true);
   const char* ids[]={"tone","human","pitch","punch","space","delay","delayTime","velocity","width","mix"};
   const char* titles[]={"TONE","HUMANIZE","PITCH","PUNCH","REVERB","DELAY","TIME","VELOCITY","WIDTH","LEVEL"};
@@ -113,7 +111,7 @@ public:
   if(p.standalone()){midiBox.addItem("No MIDI device",1);midiBox.setSelectedId(1,juce::dontSendNotification);refreshMidi();midiBox.onChange=[this]{const int i=midiBox.getSelectedId()-2;p.selectMidi(i>=0&&i<devices.size()?devices[i].identifier:juce::String{});};if(!devices.isEmpty()&&p.selectedMidi().isEmpty())midiBox.setSelectedId(2,juce::sendNotificationSync);}
   else{midiBox.addItem("DAW MIDI: all notes",1);midiBox.setSelectedId(1,juce::dontSendNotification);midiBox.setEnabled(false);}
   piano.setName("Snap keyboard");piano.setAvailableRange(48,84);piano.setLowestVisibleKey(48);piano.setScrollButtonsVisible(false);piano.setWantsKeyboardFocus(false);piano.addKeyListener(this);piano.clearKeyMappings();piano.setColour(juce::MidiKeyboardComponent::whiteNoteColourId,juce::Colour(0xffc6af7c));piano.setColour(juce::MidiKeyboardComponent::blackNoteColourId,juce::Colour(0xff17130e));piano.setColour(juce::MidiKeyboardComponent::keyDownOverlayColourId,gold.withAlpha(.65f));addAndMakeVisible(piano);
-  seenHits=p.hits.load();refreshHistory();startTimerHz(60);
+  seenHits=p.hits.load();refreshHistory();timerCallback();startTimerHz(60);
  }
  ~SnapEditor()override{stopTimer();for(size_t i=0;i<held.size();++i)if(held[i])p.keyboard.noteOff(1,60+int(i),0);setLookAndFeel(nullptr);}
  bool keyPressed(const juce::KeyPress& k)override{return handleKey(k,this);}
@@ -141,7 +139,7 @@ public:
   float phase;
   if(scheduled>=0)phase=3.f*(1.f-std::clamp(float((scheduled-now)/65),0.f,1.f));
   else if(age>=0&&age<.3f)phase=4+3*std::clamp(age/.3f,0.f,1.f);
-  else phase=.16f+.16f*float(std::sin(t*1.7));
+  else phase=.5f+.5f*float(std::sin(t*1.1));
   int f0=juce::jlimit(0,7,int(phase)),f1=std::min(7,f0+1);float u=phase-float(f0);
   if(scheduled<0&&age>=.3f&&age<.48f){f0=7;f1=0;u=(age-.3f)/.18f;}
   const float blend=u*u*(3-2*u);

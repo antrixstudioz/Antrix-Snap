@@ -31,7 +31,7 @@ public:
   s.punch=v("punch");s.delay=v("delay");s.delayTime=v("delayTime");s.burst=int(v("burst"));s.style=int(v("style"));return s;
  }
  void requestNew(){history.followLatest.store(true);requests.fetch_add(1);}
- void requestReplay(){history.replay();}
+ void requestReplay(){if(history.display().file==juce::File{})requestNew();else history.replay();}
  bool standalone()const{return wrapperType==wrapperType_Standalone;}
  juce::String selectedMidi()const{return midiIdentifier;}
  bool selectMidi(const juce::String& identifier){
@@ -39,7 +39,7 @@ public:
   if(identifier.isEmpty())return true;midiInput=juce::MidiInput::openDevice(identifier,this);
   if(!midiInput)return false;midiIdentifier=identifier;midiInput->start();return true;
  }
- void prepareToPlay(double sr,int)override{rate=sr;engine.prepare(sr);effects.prepare(sr);collector.reset(sr);externalMidi.ensureSize(8192);retirePreview();}
+ void prepareToPlay(double sr,int)override{rate=sr>0?sr:48000;engine.prepare(rate);effects.prepare(rate);collector.reset(rate);externalMidi.ensureSize(8192);retirePreview();}
  void releaseResources()override{engine.stop();retirePreview();}
  bool isBusesLayoutSupported(const BusesLayout& b)const override{return b.getMainInputChannelSet().isDisabled()&&(b.getMainOutputChannelSet()==juce::AudioChannelSet::stereo()||b.getMainOutputChannelSet()==juce::AudioChannelSet::mono());}
  void processBlock(juce::AudioBuffer<float>& buffer,juce::MidiBuffer& midi)override{
