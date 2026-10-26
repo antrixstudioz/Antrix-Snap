@@ -1,0 +1,152 @@
+{
+  "sample_rate": 48000,
+  "channels": 2,
+  "format": "signed PCM16 little endian",
+  "samples": [
+    {
+      "name": "Snap_001",
+      "frames": 31895,
+      "duration_seconds": 0.6645
+    },
+    {
+      "name": "Snap_002",
+      "frames": 49866,
+      "duration_seconds": 1.0389
+    },
+    {
+      "name": "Snap_003",
+      "frames": 5949,
+      "duration_seconds": 0.1239
+    },
+    {
+      "name": "Snap_004",
+      "frames": 16619,
+      "duration_seconds": 0.3462
+    },
+    {
+      "name": "Snap_005",
+      "frames": 3749,
+      "duration_seconds": 0.0781
+    },
+    {
+      "name": "Snap_006",
+      "frames": 6001,
+      "duration_seconds": 0.125
+    },
+    {
+      "name": "Snap_007",
+      "frames": 5944,
+      "duration_seconds": 0.1238
+    },
+    {
+      "name": "Snap_008",
+      "frames": 6282,
+      "duration_seconds": 0.1309
+    },
+    {
+      "name": "Snap_009",
+      "frames": 20572,
+      "duration_seconds": 0.4286
+    },
+    {
+      "name": "Snap_010",
+      "frames": 6297,
+      "duration_seconds": 0.1312
+    },
+    {
+      "name": "Snap_011",
+      "frames": 7102,
+      "duration_seconds": 0.148
+    },
+    {
+      "name": "Snap_012",
+      "frames": 24277,
+      "duration_seconds": 0.5058
+    },
+    {
+      "name": "Snap_013",
+      "frames": 57600,
+      "duration_seconds": 1.2
+    },
+    {
+      "name": "Snap_014",
+      "frames": 4246,
+      "duration_seconds": 0.0885
+    },
+    {
+      "name": "Snap_015",
+      "frames": 6001,
+      "duration_seconds": 0.125
+    },
+    {
+      "name": "Snap_016",
+      "frames": 7172,
+      "duration_seconds": 0.1494
+    },
+    {
+      "name": "Snap_017",
+      "frames": 6315,
+      "duration_seconds": 0.1316
+    },
+    {
+      "name": "Snap_018",
+      "frames": 5739,
+      "duration_seconds": 0.1196
+    },
+    {
+      "name": "Snap_019",
+      "frames": 4908,
+      "duration_seconds": 0.1022
+    },
+    {
+      "name": "Snap_020",
+      "frames": 3751,
+      "duration_seconds": 0.0781
+    },
+    {
+      "name": "Snap_021",
+      "frames": 5279,
+      "duration_seconds": 0.11
+    },
+    {
+      "name": "Snap_022",
+      "frames": 3919,
+      "duration_seconds": 0.0816
+    },
+    {
+      "name": "Snap_023",
+      "frames": 4654,
+      "duration_seconds": 0.097
+    },
+    {
+      "name": "Snap_024",
+      "frames": 4028,
+      "duration_seconds": 0.0839
+    },
+    {
+      "name": "Snap_025",
+      "frames": 5387,
+      "duration_seconds": 0.1122
+    },
+    {
+      "name": "Snap_026",
+      "frames": 5803,
+      "duration_seconds": 0.1209
+    },
+    {
+      "name": "Snap_027",
+      "frames": 5539,
+      "duration_seconds": 0.1154
+    },
+    {
+      "name": "Snap_028",
+      "frames": 6239,
+      "duration_seconds": 0.13
+    },
+    {
+      "name": "Snap_029",
+      "frames": 19767,
+      "duration_seconds": 0.4118
+    }
+  ]
+}

@@ -24,8 +24,14 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release ${{ matrix.args }}
       - name: Build
         run: cmake --build build --config Release --parallel 3
-      - name: Test synthesis
+      - name: Test sample playback and invisible hand target
         run: ctest --test-dir build -C Release --output-on-failure
+      - name: Upload UI preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snap-UI-${{ matrix.label }}
+          path: build/Snap-UI.png
+          if-no-files-found: error
       - name: Package on macOS
         if: runner.os == 'macOS'
         run: |

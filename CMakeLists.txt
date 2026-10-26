@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
-project(AntrixSnap VERSION 0.1.0 LANGUAGES C CXX)
+project(AntrixSnap VERSION 0.2.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 option(SNAP_TESTS_ONLY "Build DSP tests without JUCE" OFF)
 enable_testing()
 add_executable(SnapTests tests/EngineTests.cpp)
 target_include_directories(SnapTests PRIVATE Source)
+target_compile_definitions(SnapTests PRIVATE SNAP_BANK_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Assets/snaps.bank")
 add_test(NAME SnapEngine COMMAND SnapTests)
 if(SNAP_TESTS_ONLY)
   return()
@@ -17,6 +18,7 @@ if(APPLE)
   list(APPEND formats AU)
 endif()
 juce_add_binary_data(SnapArt SOURCES Assets/background.png Assets/hand.png)
+juce_add_binary_data(SnapSamples HEADER_NAME SnapSamples.h NAMESPACE SnapSamples SOURCES Assets/snaps.bank)
 juce_add_plugin(Snap COMPANY_NAME "Antrix Studioz" BUNDLE_ID "com.antrixstudioz.snap"
   PLUGIN_MANUFACTURER_CODE Antr PLUGIN_CODE SnAp PRODUCT_NAME "Snap"
   IS_SYNTH TRUE NEEDS_MIDI_INPUT TRUE NEEDS_MIDI_OUTPUT FALSE
@@ -25,6 +27,11 @@ juce_add_plugin(Snap COMPANY_NAME "Antrix Studioz" BUNDLE_ID "com.antrixstudioz.
   VST3_CATEGORIES Instrument Drum AU_MAIN_TYPE kAudioUnitType_MusicDevice)
 target_sources(Snap PRIVATE Source/Plugin.cpp)
 target_compile_definitions(Snap PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0)
-target_link_libraries(Snap PRIVATE SnapArt juce::juce_audio_utils
+target_link_libraries(Snap PRIVATE SnapArt SnapSamples juce::juce_audio_utils
   PUBLIC juce::juce_recommended_config_flags juce::juce_recommended_warning_flags)
+juce_add_console_app(SnapUiCheck PRODUCT_NAME "Snap UI Check")
+target_sources(SnapUiCheck PRIVATE tools/UiCheck.cpp)
+target_link_libraries(SnapUiCheck PRIVATE Snap SnapArt SnapSamples juce::juce_audio_utils)
+target_compile_definitions(SnapUiCheck PRIVATE JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+add_test(NAME SnapInvisibleHand COMMAND SnapUiCheck)
 
