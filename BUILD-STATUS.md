@@ -1,5 +1,3 @@
-# Version 0.2 validation
+# Version 0.3 validation
 
-Local sample-engine tests pass at 44.1, 48 and 96 kHz. Native Windows/macOS CI builds, tests the same bank and checks that the hand hit target is fully transparent. See the latest Build Snap action for results and binaries.
-
-Human listening evaluation in the target DAW is still required. The supplied real recordings now provide both layers of every snap. No synthetic rim/body/noise generator remains.
+Core DSP tests pass locally. The native Build Snap workflow validates MIDI, keyboard, preview identity, persistent WAV history, effects and UI, and produces Windows/macOS binaries. See its latest successful run for the authoritative result. Actual hardware MIDI routing and external drag-and-drop acceptance are host-dependent and require testing in the intended DAW.

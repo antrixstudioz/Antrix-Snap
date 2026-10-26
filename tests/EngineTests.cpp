@@ -39,6 +39,15 @@ int main(){
   for(int i=0;i<5000;++i){auto v=e.sample(s);check(std::isfinite(v[0])&&std::abs(v[0])<=1,"Rapid retrigger safety");}
   e.stop();check(e.sample(s)[0]==0,"Stop must silence");
  }
+ // A frozen recipe must reproduce identical PCM without advancing random selection.
+ s=snap::Settings{};e.prepare(48000);e.setSeed(987);const auto recipe=e.makeRecipe(s);
+ e.playRecipe(recipe);std::vector<std::array<float,2>> original;
+ for(int i=0;i<72000;++i)original.push_back(e.sample(s));
+ e.prepare(48000);e.playRecipe(recipe);
+ for(const auto& frame:original)check(e.sample(s)==frame,"Frozen recipe replay must be deterministic");
+ auto gentle=recipe,strong=recipe;for(int i=0;i<recipe.count;++i){gentle.voices[size_t(i)].punch=0;strong.voices[size_t(i)].punch=1;}
+ auto attackEnergy=[&](const snap::Recipe& r){e.prepare(48000);e.playRecipe(r);double energy=0;for(int i=0;i<480;++i){auto y=e.sample(s);energy+=y[0]*y[0]+y[1]*y[1];}return energy;};
+ check(attackEnergy(strong)>attackEnergy(gentle)*1.02,"Punch must strengthen the recorded transient");
  // A silent PCM bank must remain silent: no synthesized rim/noise body may leak in.
  std::vector<uint8_t> silence(20+4000,0);
  const char magic[]="SNAPBNK1";std::copy(magic,magic+8,silence.begin());
