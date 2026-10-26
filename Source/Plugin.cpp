@@ -81,7 +81,7 @@ public:
 };
 class SnapEditor final:public juce::AudioProcessorEditor,private juce::Timer{
  SnapProcessor& p;GoldLook look;
- juce::Image background=juce::ImageCache::getFromMemory(BinaryData::reference_jpg,BinaryData::reference_jpgSize);
+ juce::Image background=juce::ImageCache::getFromMemory(BinaryData::background_png,BinaryData::background_pngSize);
  juce::Image sheet=juce::ImageCache::getFromMemory(BinaryData::hand_png,BinaryData::hand_pngSize);
  std::array<juce::Slider,7> knobs;std::array<juce::Label,7> labels;
  std::vector<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>> attachments;

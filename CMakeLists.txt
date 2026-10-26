@@ -16,7 +16,7 @@ set(formats VST3 Standalone)
 if(APPLE)
   list(APPEND formats AU)
 endif()
-juce_add_binary_data(SnapArt SOURCES Assets/reference.jpg Assets/hand.png)
+juce_add_binary_data(SnapArt SOURCES Assets/background.png Assets/hand.png)
 juce_add_plugin(Snap COMPANY_NAME "Antrix Studioz" BUNDLE_ID "com.antrixstudioz.snap"
   PLUGIN_MANUFACTURER_CODE Antr PLUGIN_CODE SnAp PRODUCT_NAME "Snap"
   IS_SYNTH TRUE NEEDS_MIDI_INPUT TRUE NEEDS_MIDI_OUTPUT FALSE
